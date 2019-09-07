@@ -1,0 +1,10 @@
+MODULES_MANAGER_V2
+config|C:\Users\Deepak\workspace\penalty\config.py
+connection|C:\Users\Deepak\workspace\penalty\connection.py
+find_ball|C:\Users\Deepak\workspace\penalty\find_ball.py
+find_goal|C:\Users\Deepak\workspace\penalty\find_goal.py
+kick_ball|C:\Users\Deepak\workspace\penalty\kick_ball.py
+main|C:\Users\Deepak\workspace\penalty\main.py
+take_position|C:\Users\Deepak\workspace\penalty\take_position.py
+vision_getandsaveimage|C:\Users\Deepak\workspace\penalty\vision_getandsaveimage.py
+walk|C:\Users\Deepak\workspace\penalty\walk.py

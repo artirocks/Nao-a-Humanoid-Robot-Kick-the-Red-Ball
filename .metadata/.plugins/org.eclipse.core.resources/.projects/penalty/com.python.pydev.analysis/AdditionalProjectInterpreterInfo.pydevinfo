@@ -1,0 +1,56 @@
+-- VERSION_5
+-- START DISKCACHE_2
+C:\Users\Deepak\workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\penalty\com.python.pydev.analysis\v2_indexcache
+vision_getandsaveimage|1562357688714788000|C:\Users\Deepak\workspace\penalty\vision_getandsaveimage.py
+find_goal|1562364226753741000|C:\Users\Deepak\workspace\penalty\find_goal.py
+kick_ball|1562177921654646000|C:\Users\Deepak\workspace\penalty\kick_ball.py
+take_position|1562355016593631000|C:\Users\Deepak\workspace\penalty\take_position.py
+connection|1562354638272055000|C:\Users\Deepak\workspace\penalty\connection.py
+main|1562266569491764000|C:\Users\Deepak\workspace\penalty\main.py
+config|1562357699396755000|C:\Users\Deepak\workspace\penalty\config.py
+walk|1562364140771808000|C:\Users\Deepak\workspace\penalty\walk.py
+find_ball|1562364117256290000|C:\Users\Deepak\workspace\penalty\find_ball.py
+-- END DISKCACHE
+-- START DICTIONARY
+18
+4=vision_getandsaveimage
+12=find_goal
+6=kick_ball
+5=C:\Users\Deepak\workspace\penalty\kick_ball.py
+13=C:\Users\Deepak\workspace\penalty\find_ball.py
+8=main
+1=C:\Users\Deepak\workspace\penalty\config.py
+3=C:\Users\Deepak\workspace\penalty\vision_getandsaveimage.py
+15=C:\Users\Deepak\workspace\penalty\walk.py
+17=C:\Users\Deepak\workspace\penalty\take_position.py
+9=C:\Users\Deepak\workspace\penalty\connection.py
+7=C:\Users\Deepak\workspace\penalty\main.py
+18=take_position
+10=connection
+11=C:\Users\Deepak\workspace\penalty\find_goal.py
+2=config
+16=walk
+14=find_ball
+-- END DICTIONARY
+-- START TREE 1
+16
+IP|2|IP!1^6#1*19@IP!3^24#3*35@
+adj|4|adjust_left!5^122#5*50@adjust_right!5^130#5*50@adjust!7^30#1*67@adjust_front!5^137#5*50@
+cam|1|cam!9^13#3*83@
+fin|2|findgoal!11^5#5*98@findball!13^5#5*114@
+key|1|keys!7^17#1*67@
+kic|2|kick_right!5^60#5*50@kick_left!5^5#5*50@
+loa|1|loadProxy!1^12#5*18@
+mot|2|motion!9^4#3*83@motionProxy!7^26#1*67@
+mov|1|moveToRedBall!15^4#5*130@
+nam|1|names!7^15#1*67@
+por|2|PORT!1^7#1*19@PORT!3^25#3*35@
+pos|2|poseZero!1^81#5*18@PoseInit!1^31#5*18@
+sho|1|showNaoImage!3^5#5*34@
+sti|2|StiffnessOn!1^21#5*18@StiffnessOff!1^26#5*18@
+tak|1|take_position!17^4#5*146@
+tim|1|times!7^16#1*67@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

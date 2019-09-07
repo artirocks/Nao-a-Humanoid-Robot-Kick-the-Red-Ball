@@ -1,0 +1,5 @@
+from naoqi import ALProxy
+import numpy
+a=2
+b=3
+print"Hello world"

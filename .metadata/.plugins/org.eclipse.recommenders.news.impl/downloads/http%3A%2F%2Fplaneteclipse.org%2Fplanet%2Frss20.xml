@@ -1,0 +1,595 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+
+<channel>
+	<title>Planet Eclipse</title>
+	<link>http://planeteclipse.org/planet/</link>
+	<language>en</language>
+	<description>Planet Eclipse - http://planeteclipse.org/planet/</description>
+
+<item>
+	<title>N4JS: Short-Circuit Evaluation in N4JS</title>
+	<guid isPermaLink="false">tag:blogger.com,1999:blog-7569987920628430132.post-761854849853353188</guid>
+	<link>https://n4js.blogspot.com/2018/10/short-circuit-evaluation-in-n4js_17.html</link>
+	<description>&lt;h4&gt;Short-circuit evaluation is a popular feature of many programming languages and also part of N4JS. In this post, we show how the control-flow analysis of the N4JS-IDE deals with short-circuit evaluation, since it can have a substantial effect on the data flow and execution of a program.&lt;/h4&gt;&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://4.bp.blogspot.com/-g6wjXUt3sao/W8buQnfTrcI/AAAAAAAAADk/kAsgHzdkJ1UFfWKwj-MvMgyk5_d09iwtACLcBGAs/s1600/introduction.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://4.bp.blogspot.com/-g6wjXUt3sao/W8buQnfTrcI/AAAAAAAAADk/kAsgHzdkJ1UFfWKwj-MvMgyk5_d09iwtACLcBGAs/s1600/introduction.png&quot; width=&quot;575&quot; /&gt;&lt;/a&gt;&lt;/div&gt;Short circuit evaluation is a means to improve runtime performance when evaluating boolean expressions. This improvement is a result of skipping code execution. The example above shows an &lt;span&gt;if&lt;/span&gt;-statement whose condition consists of two boolean expressions that combine the values of &lt;span&gt;1&lt;/span&gt;, &lt;span&gt;2&lt;/span&gt; and &lt;span&gt;3,&lt;/span&gt; and its control flow graph. Note that the number literals are placeholders for more meaningful subexpressions.&lt;br /&gt;&lt;br /&gt;First the &lt;i&gt;logical and&lt;/i&gt;, then the &lt;i&gt;logical or&lt;/i&gt; gets evaluated: &lt;span&gt;(1 &amp;amp;&amp;amp; 2) || 3&lt;/span&gt;. In case the expression &lt;span&gt;1 &amp;amp;&amp;amp; 2&lt;/span&gt; evaluates to true, the evaluation of the subclause &lt;span&gt;3&lt;/span&gt; will be skipped and the evaluation of the entire condition results to true. This skipping of nested boolean expressions is called &lt;i&gt;short circuit evaluation&lt;/i&gt;.&lt;br /&gt;&lt;br /&gt;However, instead of skipping expression &lt;span&gt;3&lt;/span&gt;, expression &lt;span&gt;2&lt;/span&gt; might be skipped. In case condition &lt;span&gt;1&lt;/span&gt; does not hold, the control flow will continue with condition &lt;span&gt;3&lt;/span&gt; right away. This control flow completely takes places within the if-condition, whereas the former short circuit targets the then block.&lt;br /&gt;&lt;br /&gt;The reasoning behind short circuit evaluation is  that the skipped code does not affect the result of the whole boolean  expression. If the left hand side of the logical or expression evaluates  to true, the whole or expression also does. Only if the left hand side  is false, the right hand side will be evaluated. Complementary, the  right hand side of a logical and expression is skipped in case the left  hand side evaluates to false.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h4&gt;Side Effects&lt;/h4&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Risks of short circuit evaluation might arise in case a subexpression has side effects: These side effects will not occur if the subexpression is skipped. However, a program that relies on side effects of expressions inside an &lt;span&gt;if&lt;/span&gt;-condition can be called fragile (or adventurous). In any case it is recommended to write side-effect free conditions.&lt;/div&gt;&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://2.bp.blogspot.com/-0JcnBeJ-1Rk/W8buRqUWCvI/AAAAAAAAADw/zYwwORwyclEdUHm5HQex4aKR5UPHlATIACLcBGAs/s1600/side_effects.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://2.bp.blogspot.com/-0JcnBeJ-1Rk/W8buRqUWCvI/AAAAAAAAADw/zYwwORwyclEdUHm5HQex4aKR5UPHlATIACLcBGAs/s1600/side_effects.png&quot; width=&quot;575&quot; /&gt;&lt;/a&gt;&lt;/div&gt;Have a look at the example above. In case variable &lt;span&gt;i&lt;/span&gt; has a value of zero, the right hand side expression &lt;span&gt;i++&lt;/span&gt; is executed, otherwise, it is skipped. The side effect here is the post-increment the value of &lt;span&gt;i&lt;/span&gt;. If the value of &lt;span&gt;i&lt;/span&gt; is other than zero, this value will be printed out. Otherwise, the value will be incremented but not printed. The control flow shows this behavior with the edge starting at &lt;span&gt;i&lt;/span&gt; and targeting the symbol &lt;span&gt;console&lt;/span&gt;.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h4&gt;Loops&lt;/h4&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://2.bp.blogspot.com/-1L_PrkVxmYg/W8buQulSsEI/AAAAAAAAADc/Dh9U1bA9ZboCQP52QjjPIync_DTyJL2AQCLcBGAs/s1600/loops.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://2.bp.blogspot.com/-1L_PrkVxmYg/W8buQulSsEI/AAAAAAAAADc/Dh9U1bA9ZboCQP52QjjPIync_DTyJL2AQCLcBGAs/s1600/loops.png&quot; width=&quot;575&quot; /&gt;&lt;/a&gt;&lt;/div&gt;Loop conditions also benefit from short circuit evaluation. This is important to know when reasoning about the all possible control flow paths through the loop: Each short circuit will introduce another path. Combining all of them makes data flow in loops difficult to understand in case of side effects in the subconditions.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h4&gt;Creative use of short circuit evaluation&lt;/h4&gt;&lt;div&gt;&lt;br /&gt;Misusing short circuit evaluation can mimic if-statements by using  expressions but without using  the language feature of conditional expressions (i.e. &lt;span&gt;condition() ? then() : else()&lt;/span&gt;). This could be used when if-statements should be executed e.g. when passing  arguments to method calls, or when computing the update part of  for-loops.&lt;/div&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://2.bp.blogspot.com/-bQAq2BWre9s/W8buRTY5OJI/AAAAAAAAADo/uzZ-OqHynNcfrh1k6jYMVbN2MkhiI9xtQCLcBGAs/s1600/modelling.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot; width=&quot;575&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://2.bp.blogspot.com/-bQAq2BWre9s/W8buRTY5OJI/AAAAAAAAADo/uzZ-OqHynNcfrh1k6jYMVbN2MkhiI9xtQCLcBGAs/s1600/modelling.png&quot; width=&quot;575&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;The picture above shows the two versions: the first uses an if-statement and the second uses an  expression statement. These two statements call the functions &lt;span&gt;condition&lt;/span&gt;, &lt;span&gt;then&lt;/span&gt; and &lt;span&gt;end&lt;/span&gt;. Depending on the return value of &lt;span&gt;condition&lt;/span&gt;, the function &lt;span&gt;then&lt;/span&gt; is  executed or not. Consequently, the printouts are either &quot;condition then  end&quot; or &quot;condition end&quot;, depending on the control flow.&lt;br /&gt;&lt;br /&gt;The corresponding control flows are depicted on the right: The upper three lines refer to the if-statement, and the lower three lines to the expression statement. They reveal that the expression statement  behaves similar to the if-statement. Note that the control flow edge  in the last line that skips the nodes &lt;span&gt;end&lt;/span&gt; and &lt;span&gt;end()&lt;/span&gt; is never traversed since the logical or expression always evaluates to true.&lt;br /&gt;&lt;br /&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The interested reader would find more details about the N4JS flow graphs and their implementation in the &lt;a href=&quot;https://github.com/eclipse/n4js/blob/master/docs/org.eclipse.n4js.design/chapters/10_flowgraphs/flowgraphs.adoc&quot; target=&quot;_blank&quot;&gt;N4JS Design Document, Chapter: Flow Graphs.&lt;/a&gt; &lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;div style=&quot;text-align: right;&quot;&gt;&lt;span style=&quot;font-size: x-small;&quot;&gt;by Marcus Mews&lt;/span&gt;&lt;/div&gt;&lt;br /&gt;</description>
+	<pubDate>Thu, 04 Jul 2019 13:01:06 +0000</pubDate>
+	<author>noreply@blogger.com (n4js dev)</author>
+</item>
+<item>
+	<title>N4JS: Null/Undefined Analysis in N4JS</title>
+	<guid isPermaLink="false">tag:blogger.com,1999:blog-7569987920628430132.post-875574530099273704</guid>
+	<link>https://n4js.blogspot.com/2018/09/nullundefined-analysis-in-n4js_20.html</link>
+	<description>&lt;h4&gt;&lt;/h4&gt;&lt;h4&gt;&lt;b&gt;The N4JS IDE integrates validations and analyses that are quite common for IDEs of statically typed languages. However, these analyses are seldom available for dynamically typed languages like N4JS or TypeScript. In this post we present the null/undefined analysis for N4JS source code.&lt;/b&gt;&lt;/h4&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;&lt;span&gt;TypeError: Cannot read property of undefined&lt;/span&gt;&lt;/b&gt;&lt;br /&gt;&lt;div style=&quot;text-align: right;&quot;&gt;- Developer's staff of life&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;The runtime error above occurs pretty often for JavaScript programmers: A quick search on Google returned about 1.2 million for the term &lt;i&gt;TypeError: Cannot read property of undefined&lt;/i&gt;. When constraining search results to &lt;i&gt;&lt;span style=&quot;font-family: inherit;&quot;&gt;site:stackoverflow.com&lt;/span&gt;&lt;/i&gt; the query will still yield 126 thousand results. These numbers are comparable to the somewhat similar error &lt;i&gt;NullPointerException&lt;/i&gt; which has about 3 million hits on Google and about 525 thousand when constrained to stackoverflow.com. Some of these results are caused by rather simple mistakes that a null/undefined analysis could detect. As a result, the developer could restructure his code and remove these potential errors even before he runs his first test and hence save time.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Null/Undefined Analysis&lt;/h3&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;/div&gt;The N4JS IDE provides static analyses to indicate problems when it detects a property access on a variable which can be null or undefined. The analysis considers all assignments that occur either through a simple assignment expression or via destructuring. Loops, conditional expressions (e.g. &lt;span&gt;i = c? 1 : 0;&lt;/span&gt;) and declaration initializers are respected as well.&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://4.bp.blogspot.com/-2MLOhdP3dEk/W3_Cnrj20zI/AAAAAAAAAIU/VD7GMOKA5RkedjFYi2nhKfW2pHKtn2BLACEwYBhgL/s1600/N4JS-IDE.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://4.bp.blogspot.com/-2MLOhdP3dEk/W3_Cnrj20zI/AAAAAAAAAIU/VD7GMOKA5RkedjFYi2nhKfW2pHKtn2BLACEwYBhgL/s1600/N4JS-IDE.png&quot; width=&quot;570&quot; /&gt;&lt;/a&gt;&lt;/div&gt;The screenshot above shows a first example where a potential TypeError is detected. Since there exists at least one control flow from &lt;span&gt;v.length&lt;/span&gt; backwards to all reachable definitions of &lt;span&gt;v&lt;/span&gt;,  such that one definition assigns null or undefined to &lt;span&gt;v&lt;/span&gt;, a warning is issued telling that &lt;span&gt;v&lt;/span&gt; may be undefined.&lt;br /&gt;&lt;br /&gt;To make sure that the analysis will produce fast results, it is implemented within some limitations. One is that the analysis is done separately for each body of a function, method, etc. (i.e. &lt;i&gt;intra-procedural&lt;/i&gt; analysis). Hence it lacks knowledge of variables that cross the borders of these bodies such as the return value of a nested function call. In addition, property variables (such as &lt;span&gt;v.length&lt;/span&gt;) are not analyzed since this would require the analysis to be context sensitive to the receiver object (here &lt;span&gt;v&lt;/span&gt;). However, these limitations are common for static analyses of statically typed languages and still allow to detect many problems regarding local variables and parameters.&lt;br /&gt;&lt;br /&gt;Usually, the analysis makes optimistic assumptions. For instance it can happen that a local variable receives the value of a method call or another non-local variable. In this situation the analysis assumes this value is neither null nor undefined. The same is true for function parameters. Only when there are distinct indications in the source code for a value of a local variable to be null or undefined, the analysis will issue a warning.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Guards&lt;/h3&gt;&lt;h3&gt; &lt;/h3&gt;Sometimes the programmer knows that a variable may be null or undefined and hence checks the variable explicitly, for instance using &lt;span&gt;if (v) {...}&lt;/span&gt;. As a result this check disables the warning in the then-branch that complies to the execution semantics.&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://2.bp.blogspot.com/-Pjtv74Dim8U/W3_CntUSe0I/AAAAAAAAAIM/ECKOxqI2d2khOrBgcpxIva02wlkcAtnhACEwYBhgL/s1600/No_Warning.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://2.bp.blogspot.com/-Pjtv74Dim8U/W3_CntUSe0I/AAAAAAAAAIM/ECKOxqI2d2khOrBgcpxIva02wlkcAtnhACEwYBhgL/s1600/No_Warning.png&quot; width=&quot;570&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;As shown in the screenshot above, neither at the expression &lt;span&gt;w.length &amp;lt; 1&lt;/span&gt; nor at the statement &lt;span&gt;return w.length&lt;/span&gt;; a warning is shown. Of course, the else-branch of such a check would consequently always indicate a warning when a property of variable &lt;span&gt;v&lt;/span&gt; is accessed. Checks for conditional expressions and binary logical expressions (e.g. &lt;span&gt;v &amp;amp;&amp;amp; v.length&lt;/span&gt;) are also supported. A reader might think: &quot;In case &lt;span&gt;w&lt;/span&gt; i&lt;span style=&quot;font-family: inherit;&quot;&gt;s null  the e&lt;/span&gt;xpression &lt;span&gt;w.length&lt;/span&gt; would fail.&quot; True, but in this example the analysis detects the value of &lt;span&gt;w&lt;/span&gt; being undefined. In ca&lt;span style=&quot;font-family: inherit;&quot;&gt;se null might&lt;/span&gt; have been assigned to &lt;span&gt;w&lt;/span&gt; e.g. in an if-condition before, the analysis will issue a warning of &lt;span&gt;w&lt;/span&gt; being null at the two &lt;span&gt;w.length&lt;/span&gt; expressions.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Data Flow&lt;/h3&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;https://1.bp.blogspot.com/-y8LwrCo27Lw/W3_CnoC3pZI/AAAAAAAAAIQ/2B7jVp9SjqAqz-2TU1rg4gG3iDbdATlJgCEwYBhgL/s1600/Previous_Variable.png&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;https://1.bp.blogspot.com/-y8LwrCo27Lw/W3_CnoC3pZI/AAAAAAAAAIQ/2B7jVp9SjqAqz-2TU1rg4gG3iDbdATlJgCEwYBhgL/s1600/Previous_Variable.png&quot; width=&quot;570&quot; /&gt;&lt;/a&gt;&lt;/div&gt;There are situations where the value of a variable is null or undefined due to a previous assignment of a variable which may have been null or undefined before, like shown in the example above. Then, the null/undefined dereference problem occurs later when a property is accessed. Since the analysis respects data flow, it can follow the subsequent assignments. Hence a warning is shown at a property access indicating the null or undefined problem. Moreover, the warning also indicates the source of the null or undefined value which would be the variable &lt;span&gt;w&lt;/span&gt; in the example above.&lt;br /&gt;&lt;br /&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The interested reader would find more details about the N4JS flow graphs and their implementation in the &lt;a href=&quot;https://github.com/eclipse/n4js/blob/master/docs/org.eclipse.n4js.design/chapters/10_flowgraphs/flowgraphs.adoc&quot; target=&quot;_blank&quot;&gt;N4JS Design Document, Chapter: Flow Graphs.&lt;/a&gt; &lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;div style=&quot;text-align: right;&quot;&gt;&lt;span style=&quot;font-size: x-small;&quot;&gt;by Marcus Mews&lt;/span&gt;&lt;/div&gt;</description>
+	<pubDate>Thu, 04 Jul 2019 13:00:20 +0000</pubDate>
+	<author>noreply@blogger.com (n4js dev)</author>
+</item>
+<item>
+	<title>PapyrusUML: The end of the Papyrus IC</title>
+	<guid isPermaLink="false">http://papyrusuml.wordpress.com/?p=2344</guid>
+	<link>https://papyrusuml.wordpress.com/2019/07/02/the-end-of-the-papyrus-ic/</link>
+	<description>&lt;p&gt;With the end of the Eclipse PolarSys adventure  comes that of the Papyrus IC.&lt;/p&gt;
+
+
+
+&lt;p&gt;In the end, we could not maintain the momentum to move forward.&lt;/p&gt;
+
+
+
+&lt;p&gt;We failed  to grow our community, and in doing so, we failed our community.&lt;/p&gt;
+
+
+
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;But&lt;/strong&gt; &lt;strong&gt;this is not the end of Papyrus! Not by a long shot!&lt;/strong&gt;&lt;/p&gt;
+
+
+
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;Papyrus is more vibrant than ever. &lt;/strong&gt;&lt;/p&gt;
+
+
+
+&lt;p&gt;New variants are still being build, e.g., Papyrus UMLLight, new released are still provided with continued improvements, and a new major release is in the plan for the project.&lt;/p&gt;
+
+
+
+&lt;p&gt;As well, many companies, research groups, schools, and individuals are still teaching with it, working with it, improving it. &lt;/p&gt;
+
+
+
+&lt;p&gt;A personal shout out to EclipseSource employees and Queens University’s faculty and students  for their dedication to the Papyrus products and to Francis, our glorious leader for his perseverance.!&lt;/p&gt;
+
+
+
+&lt;p&gt;For the time being, this blog will remain a beacon of light for Papyrus . But here will be a time where it will have to close. Other endeavours await the author.&lt;/p&gt;
+
+
+
+&lt;p&gt;If anyone one want to help or take it over, please let me know&lt;/p&gt;</description>
+	<pubDate>Tue, 02 Jul 2019 15:47:10 +0000</pubDate>
+</item>
+<item>
+	<title>Doug Schaefer: Current State of C/C++ Language Servers</title>
+	<guid isPermaLink="false">https://medium.com/p/ab87e6fc186b</guid>
+	<link>https://medium.com/@dougschaefer/current-state-of-c-c-language-servers-ab87e6fc186b?source=rss-8f7a70438965------2</link>
+	<description>&lt;h3&gt;A Bit of History&lt;/h3&gt;&lt;p&gt;When I joined the Eclipse CDT project back in 2002 (yeah, it’s been a long time), I was working on modeling tools for “real time”, or more accurately, embedded reactive systems. Communicating state machines. I wrote code generators that generated C and C++ from &lt;a href=&quot;https://en.wikipedia.org/wiki/Real-Time_Object-Oriented_Modeling&quot;&gt;ROOM models&lt;/a&gt; and then eventually &lt;a href=&quot;https://www.omg.org/news/meetings/workshops/presentations/embedded-rt2002/04-1_Selic-Watson_RT-UML.tutorial&quot;&gt;UML-RT&lt;/a&gt;. ROOM was way better by the way and easier to generate for because it was more semantically complete and well defined. That objective is key later in this story.&lt;/p&gt;&lt;p&gt;We had the vision to integrate our modeling tools more closely with Integrated Development Environments. We started looking at Visual Studio but Eclipse was the young up and comer. That and IBM bought us, Rational by that point, and had already bought OTI who built Eclipse so it was a natural fit. And we were all in Ottawa. And by chance, Ottawa-based QNX had already written a C/C++ IDE based on Eclipse and were open sourcing it and it was perfect for our customers as well. It’s amazing how that all happened and led to my life as CDT Doug.&lt;/p&gt;&lt;p&gt;Our first order of business was to help the CDT become an industry class C/C++ IDE and become a foundation for integrating our modeling tools. Since we wanted to be able to generate model elements from code, it required we have accurate C and C++ parsers and indexers. No one figured we could do it, but we were able to put together a somewhat decent system written in Java in the org.eclipse.cdt.core plug-in.&lt;/p&gt;&lt;h3&gt;Scaling is Hard&lt;/h3&gt;&lt;p&gt;However, as the community started to try it out on real projects, especially ones of a significant size, we started to run into pretty massive performance problems with the indexer. We were essentially doing full builds of the user’s projects and storing the results in a string table. On large projects, builds take a long time. But users expect that and put up with it because they really need those binaries it produces. They don’t have the same patience for their IDEs building indexes the don’t really see and we paid a pretty high price for that.&lt;/p&gt;&lt;p&gt;As a solution, I wondered if we could store the symbol information that we were gathering in a way that we could load it up from disk as we were parsing other files and plug the symbol info into the AST the same way we do symbols normally. This would allow us to parse header files once and reuse the results, similar to how precompiled headers work. The price you pay is in accuracy since some systems parse header files multiple times with different macro settings. But my guess was that it wouldn’t be that bad.&lt;/p&gt;&lt;p&gt;It was hard to convince my team at IBM Rational to take this road. Accuracy was king for our modeling tools. But when I moved to join QNX, I decide to forgo that requirement and give this “fast indexer” strategy a go. And the rest is history. Performance on large projects was an order of magnitude faster. Incremental indexing of files as they were saved isn’t even noticeable. It was a huge success and my proudest contribution to the CDT. And I was even better when other community members handed us their expertise to make the accuracy better and better so you barely notice that at all either.&lt;/p&gt;&lt;h3&gt;C++ Rises from the “Dead”&lt;/h3&gt;&lt;p&gt;Move the clock a decade later and we started running into a problem. The C++ standards community has new life and are adding a tonne of new features at a three year cadence. The CDT community has long lost most of the experts that build the original parsers. Lucky for us a new crop of contributors has come along and are doing heroes work to keep up. But it’s getting harder and harder. One thing we benefit from is how slow embedded developers, the majority of users of CDT, are to adopt the new standards. It gives us time, but not forever. We need to find a better way.&lt;/p&gt;&lt;p&gt;Then along came the Language Server Protocol and a small handful of language servers that do C/C++. I’ve investigated four of them. Three of them are based on llvm and clang. One of them is in tree with llvm and clang in clang-tools-extra, i.e., clangd. The other two are projects that use libclang with parts of the tree, i.e., cquery and ccls. Those two projects are what I call “one person projects” and with cquery at least, that person found something else to do last November. Beware of the one person project.&lt;/p&gt;&lt;h3&gt;clangd&lt;/h3&gt;&lt;p&gt;I’ve spent a lot of time with clangd when experimenting with Visual Studio Code. For what it does, clangd is very accurate and really fast. It uses compile_commands.json files to find out what source files are built and what compiler and command lines they use. I’ve had to fork the tree to add in support for discovering compilers it doesn’t know about, but that was pretty easy to put together. It gives great content assist and you get the benefit of clang’s awesome compilation error diagnostics as you type. It shows a lot of promise.&lt;/p&gt;&lt;p&gt;However clangd for the longest time lacked an indexer. When you search for references it only finds them in files you have opened previously. The thought as I understand it is that you use another process to build the index and that is usually done at build time. However, not all users have such an environment set up so having an index created by the IDE is a mandatory feature. Now, clangd did eventually get an indexer but it does what the old CDT indexer did and completely parses the source three. That predictably takes forever on large projects and I don’t think users have the appetite to take a huge step backwards like that.&lt;/p&gt;&lt;h3&gt;IntelliSense&lt;/h3&gt;&lt;p&gt;While waiting for the right solution to arrive for clangd, I thought I’d give the Microsoft C/C++ Tools for VS Code a try. My initial experience was quite surprising. It actually worked well with a gnu tools cross compiler project I used for testing. You have to teach it how to parse your code using a magic JSON file, which fits right in with the rest of VS Code. It’s able to pick out the default include path when you point it at your compiler. It has a MI support for debugging, though no built-in support for remote debugging but that was hackable. It seemed like a reasonable alternative, at least for VS Code.&lt;/p&gt;&lt;p&gt;However when I tried it with one of our production projects it quickly fell apart. It does a great job trying to figure out include paths, similar to the heuristics we use in CDT. That includes things like treating all the folders in your workspace as a potential include path entry. But it tended to make mistakes. It even has support for compile_commands.json files so I could tell it the command lines that were use. It did better but still tried to do too much and gave incorrect results.&lt;/p&gt;&lt;p&gt;That and it doesn’t have an index yet either. One is coming soon, but if it can’t figure out how to parse my files correctly, it’s not going to be a great experience. Still a lot of work to do there.&lt;/p&gt;&lt;h3&gt;Where do we go from here?&lt;/h3&gt;&lt;p&gt;As it stands today, at least from a CDT perspective, there really isn’t a language server solution that comes near what we have in CDT. Yes, some things are better. Both these language servers are using real parsers to parse the code. (or at least clangd is. Microsoft’s, of course, is closed source so I can only assume). They give really good content assist and error diagnostics and open declaration works. But without a usable indexer, you don’t get accurate symbol references. And I haven’t even mentioned refactoring which CDT has and which is not even suggested in the language server protocol.&lt;/p&gt;&lt;p&gt;So if all your doing is typing in code, the new language servers are great. But if you need to do some code mining to understand the code before you change it, you’re out of luck. The good news is that we are continuing to see investment in them so who knows. But then, maybe the CDT parsers catch up with the language standards before these other language servers grow great indexers making the whole thing moot. I wouldn’t bet against that right now.&lt;/p&gt;&lt;img height=&quot;1&quot; src=&quot;https://medium.com/_/stat?event=post.clientViewed&amp;amp;referrerSource=full_rss&amp;amp;postId=ab87e6fc186b&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Fri, 28 Jun 2019 19:30:59 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: The Eclipse IoT Newsletter is out!</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/utk3Q0Gvd-c/eclipse-iot-newsletter-june-2019</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/utk3Q0Gvd-c/eclipse-iot-newsletter-june-2019</link>
+	<description>Welcome to the second issue of the Eclipse IoT Newsletter for 2019, a newsletter tailored to share Eclipse IoT community and industry news.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/utk3Q0Gvd-c&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 27 Jun 2019 16:25:00 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Eclipse Newsletter: First Look at Eclipse IDE 2019-06</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/fTPJ-a4P9bA/</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/fTPJ-a4P9bA/</link>
+	<description>This month the Eclipse Newsletter features the Eclipse IDE 2019-06, which is now available for download!&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/fTPJ-a4P9bA&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 27 Jun 2019 14:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Maximilian and Jonas: EclipseSource Oomph Profile – updated to 2019-06</title>
+	<guid isPermaLink="false">https://eclipsesource.com/?p=41826</guid>
+	<link>https://eclipsesource.com/blogs/2019/06/27/eclipsesource-oomph-profile-updated-to-2019-06/</link>
+	<description>&lt;p&gt;Last week, Eclipse 2019-06 has been released, a new version of the Eclipse IDE and platform. The first notable improvement is...&lt;/p&gt;&lt;p&gt;The post &lt;a href=&quot;https://eclipsesource.com/blogs/2019/06/27/eclipsesource-oomph-profile-updated-to-2019-06/&quot; rel=&quot;nofollow&quot;&gt;EclipseSource Oomph Profile – updated to 2019-06&lt;/a&gt; appeared first on &lt;a href=&quot;https://eclipsesource.com&quot; rel=&quot;nofollow&quot;&gt;EclipseSource&lt;/a&gt;.&lt;/p&gt;</description>
+	<pubDate>Thu, 27 Jun 2019 08:17:34 +0000</pubDate>
+</item>
+<item>
+	<title>Donald Raab: Mysterious Eclipse Collections APIs: forEachInBoth</title>
+	<guid isPermaLink="false">https://medium.com/p/2102912f1eee</guid>
+	<link>https://medium.com/@donraab/mysterious-eclipse-collections-apis-foreachinboth-2102912f1eee?source=rss-df39b86e9f04------2</link>
+	<description>&lt;p&gt;Sometimes APIs go undiscovered for a long time&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*8aeGt_jtxUp_7BA6YC4MJQ.jpeg&quot; /&gt;What is Stonehenge?&lt;/figure&gt;&lt;h3&gt;Have you ever heard of forEachInBoth?&lt;/h3&gt;&lt;p&gt;There is a method named forEachInBoth available in &lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;Eclipse Collections&lt;/a&gt;, but it can only be found on four utility classes. You can find the method on ArrayIterate, ListIterate, RandomAccessListIterate and ArrayListIterate.&lt;/p&gt;&lt;p&gt;The method forEachInBoth, takes two Lists or Arrays of the same size and iterates over both of them passing the elements from both lists at particular indexes into a two argument procedure.&lt;/p&gt;&lt;p&gt;The method has not been promoted to the ListIterable API in Eclipse Collections. This is probably because you can now zip two lists together and just use forEach or any of the other rich APIs from MutableList instead.&lt;/p&gt;&lt;h3&gt;The Method Signatures&lt;/h3&gt;&lt;p&gt;The method signatures for forEachInBoth on ListIterate, RandomAccessListIterate and ArrayListIterate are very similar so I will only show the signatures for ListIterate and ArrayIterate.&lt;/p&gt;&lt;h4&gt;ListIterate&lt;/h4&gt;&lt;pre&gt;public static &amp;lt;T1, T2&amp;gt; void forEachInBoth(&lt;br /&gt;        List&amp;lt;T1&amp;gt; list1, &lt;br /&gt;        List&amp;lt;T2&amp;gt; list2, &lt;br /&gt;        Procedure2&amp;lt;? super T1, ? super T2&amp;gt; procedure)&lt;/pre&gt;&lt;h4&gt;ArrayIterate&lt;/h4&gt;&lt;pre&gt;public static &amp;lt;T1, T2&amp;gt; void forEachInBoth(&lt;br /&gt;        T1[] objectArray1,&lt;br /&gt;        T2[] objectArray2,&lt;br /&gt;        Procedure2&amp;lt;? super T1, ? super T2&amp;gt; procedure)&lt;/pre&gt;&lt;h3&gt;When is forEachInBoth useful?&lt;/h3&gt;&lt;p&gt;One example that I discovered that forEachInBoth works well with is for converting two separate lists or arrays into a Map. Using forEachInBoth, I am able to use a method reference for calling put on the map instance. This was unexpectedly cool.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*o6s59wsMU-S8JcCoRB4kkw.png&quot; /&gt;Putting two lists into a Map&lt;/figure&gt;&lt;h4&gt;The Source&lt;/h4&gt;&lt;pre&gt;@Test&lt;br /&gt;public void forEachInBothList()&lt;br /&gt;{&lt;br /&gt;    List&amp;lt;Integer&amp;gt; one = &lt;br /&gt;            Lists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3);&lt;br /&gt;    List&amp;lt;String&amp;gt; two = &lt;br /&gt;            Lists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(&lt;strong&gt;&quot;One&quot;&lt;/strong&gt;, &lt;strong&gt;&quot;Two&quot;&lt;/strong&gt;, &lt;strong&gt;&quot;Three&quot;&lt;/strong&gt;);&lt;br /&gt;    Map&amp;lt;Integer, String&amp;gt; map = Maps.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.empty();&lt;br /&gt;&lt;br /&gt;    ListIterate.&lt;em&gt;forEachInBoth&lt;/em&gt;(one, two, map::put);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(&lt;br /&gt;            Maps.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, &lt;strong&gt;&quot;One&quot;&lt;/strong&gt;, 2, &lt;strong&gt;&quot;Two&quot;&lt;/strong&gt;, 3, &lt;strong&gt;&quot;Three&quot;&lt;/strong&gt;), &lt;br /&gt;            map);&lt;br /&gt;}&lt;/pre&gt;&lt;p&gt;This could easily work with two arrays of the same size using ArrayIterate instead.&lt;/p&gt;&lt;h3&gt;What about zip?&lt;/h3&gt;&lt;p&gt;If you use zip instead, you can use the fluent API to convert the zipped Lists into a Map using toMap. However, I could not take an existing Map and iterate using forEach or each and call Map.put since I would be iterating over Pair instances that would need to have the the two component parts of the pairs extracted and passed in as the key and value parameters.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*882skpvmBLh556IHkK5mOQ.png&quot; /&gt;Zipping two lists and putting them into a Map using toMap&lt;/figure&gt;&lt;h4&gt;The Source&lt;/h4&gt;&lt;pre&gt;@Test&lt;br /&gt;public void zipList()&lt;br /&gt;{&lt;br /&gt;    MutableList&amp;lt;Integer&amp;gt; one =&lt;br /&gt;            Lists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3);&lt;br /&gt;    MutableList&amp;lt;String&amp;gt; two =&lt;br /&gt;            Lists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(&lt;strong&gt;&quot;One&quot;&lt;/strong&gt;, &lt;strong&gt;&quot;Two&quot;&lt;/strong&gt;, &lt;strong&gt;&quot;Three&quot;&lt;/strong&gt;);&lt;br /&gt;&lt;br /&gt;    MutableMap&amp;lt;Integer, String&amp;gt; map =&lt;br /&gt;            one.zip(two).toMap(Pair::getOne, Pair::getTwo);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(&lt;br /&gt;            Maps.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, &lt;strong&gt;&quot;One&quot;&lt;/strong&gt;, 2, &lt;strong&gt;&quot;Two&quot;&lt;/strong&gt;, 3, &lt;strong&gt;&quot;Three&quot;&lt;/strong&gt;),&lt;br /&gt;            map);&lt;br /&gt;}&lt;/pre&gt;&lt;p&gt;In the case of zip with this example, there is a temporary List created after zip is called, but it will be garbage collected after the call to toMap since the List is not referenced anywhere. This same code can be implemented lazily by calling asLazy before calling zip. This removes the temporary List creation.&lt;/p&gt;&lt;pre&gt;MutableMap&amp;lt;Integer, String&amp;gt; map =&lt;br /&gt;        one.asLazy()&lt;br /&gt;                .zip(two)&lt;br /&gt;                .toMap(Pair::getOne, Pair::getTwo);&lt;/pre&gt;&lt;h3&gt;When to use forEachInBoth or zip?&lt;/h3&gt;&lt;p&gt;The primary benefit of forEachInBoth is that it is located in static utility and will work directly with Java arrays and any java.util.List. So if you need to convert two JDK Lists quickly into a Map, it might just be what the doctor ordered. However, because the method forEachInBoth returns void, you will not be able to make fluent methods calls like you can using zip. Most of the time, you may find zip more useful when dealing with two lists especially if you are performing multiple operations on the result.&lt;/p&gt;&lt;p&gt;If you discover a novel use case where forEachInBoth works well, please let us know by creating an &lt;a href=&quot;https://github.com/eclipse/eclipse-collections/issues&quot;&gt;issue on GitHub&lt;/a&gt;. We could move forEachInBoth up directly to the ListIterable API if there prove to be more good use cases that we just haven’t seen yet.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;&lt;em&gt;Eclipse Collections&lt;/em&gt;&lt;/a&gt;&lt;em&gt; is open for &lt;/em&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections/blob/master/CONTRIBUTING.md&quot;&gt;&lt;em&gt;contributions&lt;/em&gt;&lt;/a&gt;&lt;em&gt;. If you like the library, you can let us know by starring it on GitHub.&lt;/em&gt;&lt;/p&gt;&lt;img height=&quot;1&quot; src=&quot;https://medium.com/_/stat?event=post.clientViewed&amp;amp;referrerSource=full_rss&amp;amp;postId=2102912f1eee&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Wed, 26 Jun 2019 13:31:58 +0000</pubDate>
+</item>
+<item>
+	<title>Maximilian and Jonas: EMF Forms and EMF Client Platform 1.21.0 released!</title>
+	<guid isPermaLink="false">https://eclipsesource.com/?p=41810</guid>
+	<link>https://eclipsesource.com/blogs/2019/06/25/emf-forms-and-emf-client-platform-1-21-0-released/</link>
+	<description>&lt;p&gt;We are happy to announce that with the Eclipse Release 2019-06, we have also shipped  EMF Forms and EMF Client Platform...&lt;/p&gt;&lt;p&gt;The post &lt;a href=&quot;https://eclipsesource.com/blogs/2019/06/25/emf-forms-and-emf-client-platform-1-21-0-released/&quot; rel=&quot;nofollow&quot;&gt;EMF Forms and EMF Client Platform 1.21.0 released!&lt;/a&gt; appeared first on &lt;a href=&quot;https://eclipsesource.com&quot; rel=&quot;nofollow&quot;&gt;EclipseSource&lt;/a&gt;.&lt;/p&gt;</description>
+	<pubDate>Tue, 25 Jun 2019 20:40:05 +0000</pubDate>
+</item>
+<item>
+	<title>itemis: Graphical Editing Framework (GEF) 5.1.0 Release</title>
+	<guid isPermaLink="true">https://blogs.itemis.com/en/graphical-editing-framework-gef-5.1.0-release</guid>
+	<link>https://blogs.itemis.com/en/graphical-editing-framework-gef-5.1.0-release</link>
+	<description>&lt;p&gt;The Eclipse GEF team is happy to announce that version 5.1.0 of the &lt;a href=&quot;https://www.eclipse.org/gef/&quot; title=&quot; Eclipse&quot;&gt;Eclipse Graphical Editing Framework&lt;/a&gt; is part of the Eclipse 2019-06 simultaneous release:&lt;/p&gt; 
+&lt;p&gt; &lt;/p&gt; 
+&lt;img alt=&quot;GEF_Installation&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog%20(2019)/Eclipse/GRAPHICAL%20EDITING%20FRAMEWORK%20(GEF)%205.1.0%20RELEASE/GEF_Installation.jpg?width=869&amp;amp;name=GEF_Installation.jpg&quot; style=&quot;width: 869px;&quot; width=&quot;869&quot; /&gt; 
+&lt;p&gt; &lt;/p&gt; 
+&lt;p&gt;The project team has worked hard since the &lt;strong&gt;&lt;a href=&quot;https://blogs.itemis.com/en/graphical-editing-framework-gef-5.0.0-release&quot; title=&quot; Graphical Editing Framework (GEF) 5.0.0 Release&quot;&gt; Eclipse GEF 5.0.0 release &lt;/a&gt;&lt;/strong&gt; two years ago. The new release fixes &lt;a href=&quot;https://projects.eclipse.org/projects/tools.gef/releases/5.1.0-2019-06/bugs&quot;&gt;&lt;strong&gt;issues&lt;/strong&gt;&lt;/a&gt; on the &lt;em&gt;GEF MVC&lt;/em&gt;, &lt;em&gt;GEF Zest&lt;/em&gt;, and &lt;em&gt;GEF DOT&lt;/em&gt; components.&lt;/p&gt; 
+&lt;p&gt;We would like to thank all contributors who made this release possible:&lt;/p&gt; 
+&lt;p&gt;&lt;img alt=&quot;GEF_Contributions&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog%20(2019)/Embedded/GRAPHICAL%20EDITING%20FRAMEWORK%20(GEF)%205.1.0%20RELEASE/GEF_Contributions.png?width=874&amp;amp;name=GEF_Contributions.png&quot; style=&quot;width: 874px;&quot; width=&quot;874&quot; /&gt;&lt;/p&gt; 
+&lt;p&gt; &lt;/p&gt; 
+&lt;p&gt;Your feedback regarding the new release is highly appreciated. If you have any questions or suggestions, please let us know via the &lt;a href=&quot;https://www.eclipse.org/forums/index.php?t=thread&amp;amp;frm_id=81&quot; title=&quot;Eclipse GEF forum&quot;&gt;&lt;strong&gt;Eclipse GEF forum&lt;/strong&gt;&lt;/a&gt; or create an issue on &lt;a href=&quot;https://bugs.eclipse.org/bugs/describecomponents.cgi?product=GEF&quot; title=&quot;Eclipse Bugzilla&quot;&gt;&lt;strong&gt;Eclipse Bugzilla&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt; 
+&lt;p&gt;For further information, we recommend to take a look at the &lt;strong&gt;&lt;a href=&quot;https://blogs.itemis.com/topic/gef&quot; title=&quot;More Eclipse GEF blog articles&quot;&gt;Eclipse GEF blog articles&lt;/a&gt;&lt;/strong&gt;, watch the &lt;a href=&quot;https://www.youtube.com/watch?v=GnSVLNYfGlk&quot; title=&quot;Eclipse GEF DOT Video&quot;&gt;&lt;strong&gt;Eclipse GEF session on the EclipseCon Europe 2018&lt;/strong&gt;&lt;/a&gt;, and try out the&lt;strong&gt; &lt;a href=&quot;https://info.itemis.com/en/gef/tutorials/&quot; title=&quot;Online tutorial: Getting started with GEF 5.0&quot;&gt;Getting started with Eclipse GEF online tutorial&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt; 
+&lt;p&gt;&lt;/p&gt;  
+&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;https://track.hubspot.com/__ptq.gif?a=761475&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblogs.itemis.com%2Fen%2Fgraphical-editing-framework-gef-5.1.0-release&amp;amp;bu=https%253A%252F%252Fblogs.itemis.com&amp;amp;bvt=rss&quot; style=&quot;width: 1px!important;&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Tue, 25 Jun 2019 08:00:00 +0000</pubDate>
+	<author>miklossy@itemis.de (Tamas Miklossy)</author>
+</item>
+<item>
+	<title>Eclipse Announcements: Eclipse ioFog: Evolving Toward Native Kubernetes Orchestration at the Edge</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/LxHgMGOZVEM/eclipse-iofog-evolving-toward-native-kubernetes-orchestration-edge</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/LxHgMGOZVEM/eclipse-iofog-evolving-toward-native-kubernetes-orchestration-edge</link>
+	<description>The Eclipse Foundation is excited to support today's announcement of the initial availability of Eclipse ioFog features that make any Kubernetes distribution edge-aware.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/LxHgMGOZVEM&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Mon, 24 Jun 2019 18:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Jens Reimann: Bringing IoT to Red Hat AMQ Online</title>
+	<guid isPermaLink="false">https://dentrassi.de/?p=4160</guid>
+	<link>https://dentrassi.de/2019/06/24/bringing-iot-to-red-hat-amq-online/</link>
+	<description>&lt;p&gt;&lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/amq_online_1.1_on_openshift_container_platform_release_notes/index&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Red Hat AMQ Online 1.1&lt;/a&gt; was recently announced, and I am excited about it because it contains a tech preview of our Internet of Things &lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/amq_online_1.1_on_openshift_container_platform_release_notes/tech-preview-online#internet_of_things_iot_functionality&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;(IoT) support&lt;/a&gt;. AMQ Online is the “messaging as service solution” from Red Hat AMQ. Leveraging the work we did on &lt;a href=&quot;https://www.eclipse.org/hono/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Eclipse Hono&lt;/a&gt; allows us to integrate a &lt;a href=&quot;https://dentrassi.de/2018/07/25/scaling-iot-eclipse-hono/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;scalable&lt;/a&gt;,  cloud-native IoT personality into this general-purpose messaging layer.  And the whole reason why you need an IoT messaging layer is so you can  focus on connecting your cloud-side application with the millions of  devices that you have out there.&lt;/p&gt;
+
+
+
+&lt;span id=&quot;more-4160&quot;&gt;&lt;/span&gt;
+
+
+
+&lt;p class=&quot;has-background has-very-light-gray-background-color&quot;&gt;&lt;em&gt;This post was originally published on &lt;a href=&quot;https://developers.redhat.com/blog/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Red Hat Developers&lt;/a&gt;, the community to learn, code, and share faster. To read the original post, click &lt;a href=&quot;https://developers.redhat.com/blog/2019/05/14/bringing-iot-to-red-hat-amq-online/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+
+
+&lt;h2&gt;What is Eclipse Hono&lt;img alt=&quot;™&quot; class=&quot;wp-smiley&quot; src=&quot;https://s.w.org/images/core/emoji/12.0.0-1/72x72/2122.png&quot; style=&quot;height: 1em;&quot; /&gt;?&lt;/h2&gt;
+
+
+
+&lt;p&gt;Eclipse Hono is an IoT abstraction layer. It defines APIs in order to build an IoT stack in the cloud, taking care of things like device credentials, protocols, and scalability. For some of those APIs, it comes with a ready-to-run implementation, such as the MQTT protocol adapter. For others, such as the device registry, it only defines the necessary API. The actual implementation must be provided to the system.&lt;/p&gt;
+
+
+
+&lt;div class=&quot;wp-block-image&quot;&gt;&lt;figure class=&quot;aligncenter is-resized&quot;&gt;&lt;img alt=&quot;Eclipse Hono IoT architecture overview&quot; class=&quot;wp-image-4165&quot; height=&quot;346&quot; src=&quot;https://dentrassi.de/wp-content/uploads/hono-overview.svg&quot; width=&quot;849&quot; /&gt;Eclipse Hono overview&lt;/figure&gt;&lt;/div&gt;
+
+
+
+&lt;p&gt;A key feature of Hono is that it normalizes the different IoT-specific protocols on &lt;a href=&quot;http://www.amqp.org/specification/1.0/amqp-org-download&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;AMQP 1.0&lt;/a&gt;.  This protocol is common on the data center side, and it is quite  capable of handling the requirements on throughput and back-pressure.  However, on the IoT devices side, other protocols might have more  benefits for certain use cases. MQTT is a favorite for many people, as  is plain HTTP due to its simplicity. LoRaWAN, CoAP, Sigfox, etc. all  have their pros and cons. If you want to play in the world of IoT, you  simply have to support them all. Even when it comes to custom protocols,  Hono provides a software stack to easily implement your custom  protocol.&lt;/p&gt;
+
+
+
+&lt;h2&gt;AMQ Online&lt;/h2&gt;
+
+
+
+&lt;p&gt;Hono requires an AMQP 1.0 messaging backend. It requires a broker and a  component called “router” (which doesn’t own messages but only forwards  them to the correct receiver). Of course, it expects the AMQP layer to  be as scalable as Hono itself. AMQ Online is a “self-service,” messaging  solution for the cloud. So it makes sense to allow Hono to run on top  of it. We had this deployment model for a while in Hono, allowing the  use of &lt;a href=&quot;https://enmasse.io/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;EnMasse&lt;/a&gt; (the upstream project of AMQ Online).&lt;/p&gt;
+
+
+
+&lt;h2&gt;Self-service IoT&lt;/h2&gt;
+
+
+
+&lt;p&gt;In a world of Kubernetes and operators, the thing that you are actually looking for is more like this:&lt;/p&gt;
+
+
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;kind: IoTProject
+ apiVersion: iot.enmasse.io/v1alpha1
+ metadata:
+   name: iot
+   namespace: myapp
+ spec:
+   downstreamStrategy:
+     managedStrategy:
+       addressSpace:
+         name: iot
+         plan: standard-unlimited
+       addresses:
+         telemetry:
+           plan: standard-small-anycast
+         event:
+           plan: standard-small-queue
+         command:
+           plan: standard-small-anycast&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;You simply define your IoT project, by creating a new custom resource using &lt;code&gt;kubectl create -f&lt;/code&gt;  and you are done. If you have the IoT operator of AMQ Online 1.1  deployed, then it will create the necessary address space for you, and  set up the required addresses.&lt;/p&gt;
+
+
+
+&lt;p&gt;The IoT project will also automatically act as a Hono tenant. In this example, the Hono tenant would be &lt;code&gt;myapp.iot&lt;/code&gt;, and so the full authentication ID of e.g. &lt;code&gt;sensor1&lt;/code&gt; would be &lt;code&gt;sensor1@myapp.iot&lt;/code&gt;. The IoT project also holds all the optional tenant configuration under the section &lt;code&gt;.spec.configuration&lt;/code&gt;.&lt;/p&gt;
+
+
+
+&lt;p&gt;With the &lt;a href=&quot;https://github.com/ctron/hat&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Hono admin tool,&lt;/a&gt;  you can quickly register a new device with your installation (the  documentation will also tell you how to achieve the same with &lt;code&gt;curl&lt;/code&gt;):&lt;/p&gt;
+
+
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;# register the new context once with 'hat'
+hat context create myapp1 --default-tenant myapp.iot https://$(oc -n messaging-infra get routes device-registry --template='{{ .spec.host }}')
+
+# register a new device and set credentials
+hat reg create 4711
+hat cred set-password sensor1 sha-512 hono-secret --device 4711&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;With that, you can simply use Hono as always. First, start the consumer:&lt;/p&gt;
+
+
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;# from the hono/cli directory
+export MESSAGING_HOST=$(oc -n myapp get addressspace iot -o jsonpath={.status.endpointStatuses[?(@.name==\'messaging\')].externalHost})
+export MESSAGING_PORT=443
+
+mvn spring-boot:run -Drun.arguments=--hono.client.host=$MESSAGING_HOST,--hono.client.port=$MESSAGING_PORT,--hono.client.username=consumer,--hono.client.password=foobar,--tenant.id=myapp.iot,--hono.client.trustStorePath=target/config/hono-demo-certs-jar/tls.crt,--message.type=telemetry&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;And then publish some data to the telemetry channel:&lt;/p&gt;
+
+
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;curl -X POST -i -u sensor1@myapp.iot:hono-secret -H 'Content-Type: application/json' --data-binary '{&quot;temp&quot;: 5}' https://$(oc -n enmasse-infra get routes iot-http-adapter --template='{{ .spec.host }}')/telemetry&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;For more detailed instructions, see: &lt;a href=&quot;https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/evaluating_amq_online_on_openshift_container_platform/assembly-iot-messaging&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Getting Started with Internet of Things (IoT) on AMQ Online&lt;/a&gt;.&lt;/p&gt;
+
+
+
+&lt;h2&gt;IoT integration&lt;/h2&gt;
+
+
+
+&lt;p&gt;As mentioned before, you don’t do IoT just for the fun of it (well,  maybe at home, with a Raspberry Pi, Node.js, OpenHAB, and mosquitto).  But when you want to connect millions of devices with your cloud  backend, you want to start working with that data. Using Hono gives you a  pretty simple start. Everything you need is an AMQP 1.0 connectivity.  Assuming you use Apache Camel, pushing telemetry data towards a Kafka  cluster is as easy as (also see &lt;a href=&quot;https://github.com/ctron/hono-example-bridge&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;ctron/hono-example-bridge&lt;/a&gt;):&lt;/p&gt;
+
+
+
+&lt;pre class=&quot;wp-block-code&quot;&gt;&lt;code&gt;&amp;lt;route id=&quot;store&quot;&amp;gt;
+  &amp;lt;from uri=&quot;amqp:telemetry/myapp.iot&quot; /&amp;gt;
+
+  &amp;lt;setHeader id=&quot;setKafkaKey&quot; headerName=&quot;kafka.KEY&quot;&amp;gt;
+    &amp;lt;simple&amp;gt;${header[device_id]}&amp;lt;/simple&amp;gt;
+  &amp;lt;/setHeader&amp;gt;
+
+  &amp;lt;to uri=&quot;kafka:telemetry?brokers={{kafka.brokers}}&quot; /&amp;gt;
+&amp;lt;/route&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;Bringing together solutions like &lt;a href=&quot;https://www.redhat.com/en/technologies/jboss-middleware/fuse&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Red Hat Fuse&lt;/a&gt;, &lt;a href=&quot;https://www.redhat.com/en/technologies/jboss-middleware/amq&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;AMQ&lt;/a&gt; and &lt;a href=&quot;https://www.redhat.com/en/technologies/jboss-middleware/decision-manager&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Decision Manager&lt;/a&gt; makes it a lot easier to give your custom logic in the data center (your value add‑on) access to the Internet of Things.&lt;/p&gt;
+
+
+
+&lt;h2&gt;What’s next?&lt;/h2&gt;
+
+
+
+&lt;p&gt;AMQ Online 1.1 is the first version to feature IoT as a tech preview. So, give it a try, play with it, but also keep in mind that it is a tech preview.&lt;/p&gt;
+
+
+
+&lt;p&gt;In the upstream project EnMasse, we are currently working on creating a scalable, general purpose device registry based on &lt;a href=&quot;https://infinispan.org/&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Infinispan&lt;/a&gt;.  Hono itself doesn’t bring a device registry, it only defines the APIs  it requires. However, we think it makes sense to provide a scalable  device registry, out of the box, to get you started. In AMQ Online, that  would then be supported by using &lt;a href=&quot;https://www.redhat.com/en/technologies/jboss-middleware/data-grid&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Red Hat Data Grid&lt;/a&gt;.&lt;/p&gt;
+
+
+
+&lt;p&gt;In the next months, we hope to also see the release of Eclipse Hono 1.0 and graduate the project from the incubation phase. This is a big step for a project at Eclipse but also the right thing to do. Eclipse Hono is ready, and graduating the project means that we will pay even closer attention to APIs and stability. Still, new features like LoRaWAN, maybe Sigfox, and a proper HTTP API definition for the device registry, are already under development.&lt;/p&gt;
+
+
+
+&lt;p&gt;So, there are lots of new features and enhancements that we hope to bring into AMQ Online 1.2.&lt;/p&gt;
+&lt;p&gt;The post &lt;a href=&quot;https://dentrassi.de/2019/06/24/bringing-iot-to-red-hat-amq-online/&quot; rel=&quot;nofollow&quot;&gt;Bringing IoT to Red Hat AMQ Online&lt;/a&gt; appeared first on &lt;a href=&quot;https://dentrassi.de&quot; rel=&quot;nofollow&quot;&gt;ctron's blog&lt;/a&gt;.&lt;/p&gt;</description>
+	<pubDate>Mon, 24 Jun 2019 07:47:59 +0000</pubDate>
+</item>
+<item>
+	<title>Mike Milinkovich: Eclipse ioFog: Evolving Toward Native Kubernetes Orchestration at the Edge</title>
+	<guid isPermaLink="false">http://eclipse-foundation.blog/?p=1500</guid>
+	<link>https://eclipse-foundation.blog/2019/06/23/eclipse-iofog-delivering-k8s-at-the-edge/</link>
+	<description>&lt;p&gt;With the proliferation of AI, autonomous vehicles, 5G, IoT, and other industrial use cases that require lightning-fast data processing, edge computing has emerged over the past few years as a way to address the limitations of existing cloud architectures to process information and deliver services at the “IoT edge”. Instead of backhauling data to the centralized cloud, edge computing brings computational power closer to data sources to support near real-time insights and local actions while reducing network bandwidth and storage requirements.&lt;/p&gt;
+&lt;p&gt;According to &lt;a href=&quot;https://www.gartner.com/smarterwithgartner/what-edge-computing-means-for-infrastructure-and-operations-leaders/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Gartner&lt;/a&gt;, 75% of enterprise-generated data will be created and processed outside a traditional centralized data center or cloud by 2025. While the problems at the IoT edge — connectivity, manageability, scalability, reliability, security — are being solved as point solutions by enterprises and ecosystem players, there is a need for a foundational industry-wide standard for managing distributed IoT workloads. Time and again, open source has been proven to be the best way to deliver complex platform software with industrial scale collaboration.&lt;/p&gt;
+&lt;p&gt;Enter Kubernetes, the de facto standard for orchestrating containers and the applications running inside them. Kubernetes has massive potential for handling IoT workloads on the edge by providing a common control plane across hybrid cloud and edge environments to simplify management and operations. Within the &lt;a href=&quot;https://github.com/kubernetes/community/tree/master/wg-iot-edge&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Kubernetes IoT Edge Working Group&lt;/a&gt;, members of the Kubernetes and Eclipse communities are collaborating with leading technology innovators to extend Kubernetes to support dynamically, securely, and remotely managing edge nodes.&lt;/p&gt;
+&lt;p&gt;A great example of this collaboration is Eclipse ioFog, a universal Edge Compute Platform which offers a standardized way to develop and remotely deploy secure microservices to edge computing devices. ioFog can be installed on any hardware running Linux and provides a universal runtime for microservices to dynamically run on the edge. Companies in different vertical markets such as retail, automotive, oil and gas, telco, and healthcare are using ioFog to turn any compute device into an edge software platform.&lt;/p&gt;
+&lt;p&gt;The Eclipse Foundation is excited to support today’s announcement of the initial availability of ioFog features that make any Kubernetes distribution edge-aware. With this latest release, developers are able to extend Kubernetes to easily deploy, secure, and manage edge computing networks supporting applications such as advanced AI and machine learning algorithms.&lt;/p&gt;
+&lt;p&gt;Farah Papaioannou, co-founder and president of Edgeworx, explains the significance of the release this way:&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;&lt;i&gt;“ioFog is a proven platform at the edge. With this release, we build on native Kubernetes, seamlessly extending it to the edge…We do this based on things that actually matter at the edge, such as latency, location or resources. We are delivering today a full cloud-to-edge solution, that’s 100-percent open source and works with any Kubernetes flavors and distros.”&lt;/i&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;These native Kubernetes enhancements are in the process of being contributed to the Eclipse ioFog open source project. We are proud to support the collective efforts of the Eclipse community and the Kubernetes ecosystem to help developers deploy, manage, and orchestrate applications and microservices from cloud to edge in a simple and secure manner.&lt;/p&gt;
+&lt;p&gt;For more information about ioFog, get started by using &lt;a href=&quot;https://iofog.org/releases.html&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;this link&lt;/a&gt; to install and set up your production ioFog environment. If you have questions or want to connect with other people involved in this platform, join the &lt;a href=&quot;https://discuss.iofog.org/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;ioFog community&lt;/a&gt; and the &lt;a href=&quot;https://accounts.eclipse.org/mailing-list/iofog-dev&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;mailing list&lt;/a&gt;.&lt;/p&gt;</description>
+	<pubDate>Sun, 23 Jun 2019 20:46:52 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Become a Sponsor at EclipseCon Europe 2019!</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/T421K3DDX_8/become-sponsor-eclipsecon-europe-2019</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/T421K3DDX_8/become-sponsor-eclipsecon-europe-2019</link>
+	<description>We're gearing up for EclipseCon Europe 2019, our biggest event of the year which brings together developers, architects, and open source business leaders.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/T421K3DDX_8&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Fri, 21 Jun 2019 16:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Update for Jakarta EE community: June 2019</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/Jxl4CGEvroA/update-jakarta-ee-community-june-2019</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/Jxl4CGEvroA/update-jakarta-ee-community-june-2019</link>
+	<description>Get the latest monthly email update on the Jakarta EE community from news highlights to various meetings and events related to the platform!&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/Jxl4CGEvroA&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 20 Jun 2019 17:05:00 +0000</pubDate>
+</item>
+<item>
+	<title>Tanja Obradovic: Update for Jakarta EE community: June 2019</title>
+	<guid isPermaLink="false">https://blogs.eclipse.org/6711 at https://blogs.eclipse.org</guid>
+	<link>https://blogs.eclipse.org/post/tanja-obradovic/update-jakarta-ee-community-june-2019</link>
+	<description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p dir=&quot;ltr&quot;&gt;Last month, we launched a monthly email update for the Jakarta EE community which seeks to highlight news from various committee meetings related to this platform. We have also decided to publish these updates as blogs and share the information that way as well. There are a few ways to get a grip on the work that has been invested in Jakarta EE so far, so if you’d like to learn more about Jakarta EE-related plans and get involved in shaping the future of cloud native Java, read on.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, let’s have a look at what has happened in May:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Jakarta EE 8 release and progress&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Jakarta EE 8 will be fully compatible with Java EE 8, including use of the javax namespace. The process of driving the Jakarta EE 8 specifications, as well as delivery of the Jakarta EE 8 TCKs, and Jakarta EE 8 compatible implementations will be transparent.&lt;/p&gt;
+
+&lt;p&gt;Mike Milinkovich recently published a FAQ about Jakarta EE 8, in which he offered answers to questions such as  &lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Will Jakarta EE 8 break existing Java EE applications that rely upon javax APIs?&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;What will Jakarta EE 8 consist of?&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Will there be Jakarta EE 8 compatible implementations?&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;What is the process for delivery of Jakarta EE 8&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;When will Jakarta EE 8 be delivered?&lt;/p&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Read Mike’s &lt;a href=&quot;https://eclipse-foundation.blog/2019/05/08/jakarta-ee-8-faq/&quot;&gt;blog&lt;/a&gt; to find out what to expect from the Jakarta EE 8 release.&lt;/p&gt;
+
+&lt;p&gt;We need your help with the work on Jakarta EE 8 release. Project teams please get involved in the &lt;a href=&quot;https://github.com/orgs/eclipse-ee4j/projects&quot;&gt;Eclipse EE4J projects &lt;/a&gt;and help out with  &lt;a href=&quot;https://github.com/orgs/eclipse-ee4j/projects/11&quot;&gt;Jakarta Specification Project Names&lt;/a&gt; and &lt;a href=&quot;https://github.com/orgs/eclipse-ee4j/projects/10&quot;&gt;Jakarta Specification Scope Statements.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you’d like to get involved in the work for the &lt;a href=&quot;https://github.com/eclipse-ee4j/jakartaee-platform/projects&quot;&gt;Jakarta EE Platform&lt;/a&gt;, there are a few &lt;a href=&quot;https://github.com/eclipse-ee4j/jakartaee-platform/projects&quot;&gt;projects&lt;/a&gt; that require your attention, namely the Jakarta EE 8 Platform Specification, which is meant to keep track of the work involved with creating the platform specification for Jakarta EE 8, Jakarta EE 9 Platform Specification, intended to keep track of the work involved with creating the platform specification for Jakarta EE 9 and Jakarta EE.Next Roadmap Planning, which seeks to define a roadmap and plan for the Jakarta EE 9 release.&lt;/p&gt;
+
+&lt;p&gt;Right now, the fastest way to have a say in the planning and preparation for the Jakarta EE 9 release is by getting involved in the &lt;a href=&quot;https://github.com/eclipse-ee4j/jakartaee-platform/projects/1&quot;&gt;Jakarta EE.Next Roadmap Planning&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Election schedule for Jakarta EE working group committees&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The various facets of the Jakarta EE Working Group are driven by three key committees for which there are elected positions to be filled: the Steering Committee, the Specification Committee, and the Marketing and Brand Committee. The elected positions are to represent each of the Enterprise Members, Participant Members, and Committer Members. Strategic Members each have a representative appointed to these committees.  &lt;/p&gt;
+
+&lt;p&gt;The Eclipse Foundation is holding elections on behalf of the Jakarta EE Working Group using the following proposed timetable:  &lt;/p&gt;
+
+&lt;p&gt;Nomination period:  May 24 - June 4 (self-nominations are welcome)&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Election period:  June 11 - June 25&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Winning candidates announced:  June 27&lt;/p&gt;
+
+&lt;p&gt;All members are encouraged to consider nominating someone for the positions, and self-nominations are welcome. The period for nominations runs through June 4th.  Nominations may be sent to elections@eclipse.org.&lt;/p&gt;
+
+&lt;p&gt;Once nominations are closed, all working group members will be informed about the candidates and ballots will be distributed via email to those eligible to vote.  The election process will follow the Eclipse “Single Transferable Vote” method, as defined in the Eclipse&lt;a href=&quot;https://www.eclipse.org/org/documents/&quot;&gt; Bylaws&lt;/a&gt;.  &lt;/p&gt;
+
+&lt;p&gt;The winning candidates will be announced on this mailing list immediately after the elections are concluded.  &lt;/p&gt;
+
+&lt;p&gt;The following positions will be filled as part of this election:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Steering Committee&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Two seats allocated for Enterprise Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Participant Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Committer Members&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Specification Committee&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Two seats allocated for Enterprise Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Participant Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Committer Members&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Marketing and Brand Committee&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Two seats allocated for Enterprise Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Participant Members&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;One seat allocated for Committer Members&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Transitioning Jakarta EE to the jakarta namespace&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The process of migrating Java EE to the Eclipse Foundation has been a collaborative effort between the Eclipse Foundation staff and the many contributors, committers, members, and stakeholders that are participating. Last month, it was revealed that the javax package namespace will not be evolved by the Jakarta EE community and that Java trademarks such as the existing specification names will not be used by Jakarta EE specifications. While these restrictions were not what was originally expected, it might be in Jakarta EE’s best interest as the modification of javax would always have involved long-term legal and trademark restrictions.&lt;/p&gt;
+
+&lt;p&gt;In order to evolve Jakarta EE, we must transition to a new namespace. In an effort to bootstrap the conversation, the Jakarta EE Specification Committee has prepared &lt;a href=&quot;https://docs.google.com/document/d/16xHv34J_r7pA5ZsXg3O0eVAZiC12vVkqWnIqWsoUL74/edit&quot;&gt;two proposals&lt;/a&gt; (Big-bang Jakarta EE 9, Jakarta EE 10 new features and incremental change in Jakarta EE 9 and beyond) on how to make the move into the new namespace smoother. These proposals represent a starting point, but the community is warmly invited to submit more proposals.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://accounts.eclipse.org/mailing-list/jakartaee-platform-dev&quot;&gt;Community discussion&lt;/a&gt; on how to transition to the jakarta namespace concluded Sunday, June 9th, 2019.&lt;/p&gt;
+
+&lt;p&gt;We invite you to read a few blogs on this topic:&lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://eclipse-foundation.blog/2019/05/03/jakarta-ee-java-trademarks/&quot;&gt;Mike Milinkovich’s blog &lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;http://adambien.blog/roller/abien/entry/java_ee_jakarta_ee_and&quot;&gt;Adam Bien’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://dmitrykornilov.net/2019/05/03/thoughts-about-jakarta-ee-future-without-javax/&quot;&gt;Dmitry Kornilov’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://www.agilejava.eu/2019/05/07/transitioning-jakarta-ee-to-the-jakarta-namespace/&quot;&gt;Ivar Grimstad’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;http://londonjavacommunity.co.uk/java-ee-to-jakarta-ee-and-the-javax-trademark-decision/&quot;&gt;Martijn Verburg’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://www.javacodegeeks.com/2019/05/jakarta-ee-clean-slate.html&quot;&gt;Alex Theedom’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://blog.payara.fish/jakarta-ee-8-and-beyond&quot;&gt;Steve Millidge’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://www.tomitribe.com/blog/jakarta-ee-a-new-hope/&quot;&gt;David Blevins’ blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://openliberty.io/blog/2019/05/08/jakarta-ee-naming.html&quot;&gt;Alasdair Nottingham’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://blog.sebastian-daschner.com/entries/thoughts-on-jakarta-package-name&quot;&gt;Sebastian Daschner’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://struberg.wordpress.com/2019/05/06/the-way-forward-for-jakartaee-packages/&quot;&gt;Mark Struberg’s blog&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://www.youtube.com/watch?time_continue=1&amp;amp;v=jSyamH1JYuI&quot;&gt;Tanja Obradovic’s interview at JAX 2019&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;2019 Jakarta EE Developer Survey Results&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The Eclipse Foundation recently released the results of the &lt;a href=&quot;https://jakarta.ee/documents/insights/2019-jakarta-ee-developer-survey.pdf&quot;&gt;2019 Jakarta EE developer survey&lt;/a&gt; that canvassed nearly 1,800 Java developers about trends in enterprise Java programming and their adoption of cloud native technologies. The aim of the survey, which was conducted by the Foundation in March of 2019 in cooperation with member companies and partners, including the London Java Community and Java User Groups, was to help Java ecosystem stakeholders better understand the requirements, priorities, and perceptions of enterprise Java developer communities.&lt;/p&gt;
+
+&lt;p&gt;A third of developers surveyed are currently building cloud native architectures and another 30 percent are planning to within the next year. Furthermore, the number of Java applications running in the cloud is expected to increase significantly over the next two years, with 32 percent of respondents hoping to run nearly two-thirds of their Java applications in the cloud in two years’ time. Also, over 40 percent of respondents are using the microservices architecture to implement Java in the cloud.&lt;/p&gt;
+
+&lt;p&gt;Access the full findings of the 2019 Java Community Developer Survey &lt;a href=&quot;https://jakarta.ee/documents/insights/2019-jakarta-ee-developer-survey.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Community engagement&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The Jakarta EE community promises to be a very active one, especially given the various channels that can be used to stay up-to-date with all the latest and greatest. Tanja Obradovic’s &lt;a href=&quot;https://blogs.eclipse.org/post/tanja-obradovic/jakarta-ee-community-engagement&quot;&gt;blog&lt;/a&gt; offers a sneak peek at the community engagement plan, which includes&lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Social media: &lt;a href=&quot;https://twitter.com/jakartaee&quot;&gt;Twitter&lt;/a&gt;, &lt;a href=&quot;https://www.facebook.com/JakartaEE/&quot;&gt;Facebook&lt;/a&gt;, &lt;a href=&quot;https://www.linkedin.com/groups/13597511/&quot;&gt;LinkedIn Group&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Mailing lists: subscribe to the following mailing lists: &lt;a href=&quot;mailto:jakarta.ee-community@eclipse.org&quot;&gt;jakarta.ee-community@eclipse.org&lt;/a&gt; &amp;amp; &lt;a href=&quot;mailto:jakarta.ee-wg@eclipse.org&quot;&gt;jakarta.ee-wg@eclipse.org&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Newsletter / Blogs / emails: &lt;a href=&quot;https://www.eclipse.org/community/eclipse_newsletter/&quot;&gt;Eclipse Newsletter&lt;/a&gt;, &lt;a href=&quot;https://jakartablogs.ee/&quot;&gt;Jakarta Blogs&lt;/a&gt;, monthly update emails to &lt;a href=&quot;mailto:jakarta.ee-community@eclipse.org&quot;&gt;jakarta.ee-community@eclipse.org&lt;/a&gt; and community blogs on &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1JflN_xJ9d5ZWu5VUbDV9Spj7mc8WuPGMfd6EZgabXz0/edit#gid=0&quot;&gt;“how are you involved with Jakarta EE” &lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li dir=&quot;ltr&quot;&gt;
+	&lt;p dir=&quot;ltr&quot;&gt;Meetings: &lt;a href=&quot;https://www.meetup.com/jakartatechtalks_/&quot;&gt;Jakarta Tech Talks&lt;/a&gt;, &lt;a href=&quot;https://calendar.google.com/calendar/embed?src=eclipse-foundation.org_3281qms6riu4kdf354jn5idon0%40group.calendar.google.com&amp;amp;ctz=America%2FToronto&quot;&gt;Jakarta EE Update&lt;/a&gt;, Jakarta Town Hall, EF organized Events and Conferences, JakartaOne Livestream, &lt;a href=&quot;https://www.eclipsecon.org/europe2019&quot;&gt;EclipseCon Europe&lt;/a&gt;&lt;/p&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more information about community engagement, read Tanja Obradovic’s &lt;a href=&quot;https://blogs.eclipse.org/post/tanja-obradovic/jakarta-ee-community-engagement&quot;&gt;blog&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Jakarta EE Wiki&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Have you checked out the &lt;a href=&quot;https://wiki.eclipse.org/Jakarta_EE&quot;&gt;Jakarta EE Wiki&lt;/a&gt; yet? It includes important information such as process guidelines, documentation, Eclipse guides and mailing lists, Jakarta EE Working Group essentials and more.  &lt;/p&gt;
+
+&lt;p&gt;Keep in mind that this page is a work in progress and is expected to evolve in the upcoming weeks and months. The community’s input and suggestions are welcome and appreciated!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Jakarta EE Community Update: May video call&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The most recent Jakarta EE Community Update meeting took place in May; the conversation included topics such as the Jakarta EE progress so far, Jakarta EE Rights to Java Trademarks, the transition from javax namespace to the jakarta namespace (mapping javax to jakarta, when repackaging is required and when migration to namespaces is not required) and how to maximize compatibility with Java EE 8 and Jakarta EE for future versions without stifling innovation, the Jakarta EE 8 release, PMC/ Projects update and more.&lt;/p&gt;
+
+&lt;p&gt;The minutes of the Jakarta EE community update meeting are available &lt;a href=&quot;https://docs.google.com/document/d/1TH_p_m-z3v9HZyhgwW41JzXWTFIwrClGLaSDIy0Sf5w/edit&quot;&gt;here&lt;/a&gt; and the recorded Zoom video conversation can be found &lt;a href=&quot;https://www.youtube.com/watch?v=bCK3kRiYz-o&amp;amp;feature=youtu.be&quot;&gt;here&lt;/a&gt;.  &lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;&lt;strong&gt;Jakarta EE presence at conferences: May overview&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p dir=&quot;ltr&quot;&gt;Cloud native was the talk of the town in May. Conferences such as &lt;a href=&quot;https://jax.de/en/&quot;&gt;JAX 2019&lt;/a&gt;,&lt;a href=&quot;https://www.redhat.com/en/summit/2019&quot;&gt; Red Hat Summit 2019&lt;/a&gt; and &lt;a href=&quot;https://events.linuxfoundation.org/events/kubecon-cloudnativecon-europe-2019/&quot;&gt;KubeCon + CloudNativeCon Europe 2019&lt;/a&gt; were all about cloud native and how to tap into this key approach for IT modernization success and the Eclipse Foundation was there to take a pulse of the community to better understand the adoption of cloud native technologies.&lt;/p&gt;
+
+&lt;p&gt;Don’t forget to check out Tanja Obradovic’s &lt;a href=&quot;https://www.youtube.com/watch?time_continue=1&amp;amp;v=jSyamH1JYuI&quot;&gt;video interview&lt;/a&gt; about the future of Jakarta EE at JAX 2019.  &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.eclipsecon.org/europe2019&quot;&gt;EclipseCon Europe 2019&lt;/a&gt;: Call for Papers open until July 15&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s that time of year again! You can now submit your proposals to be part of EclipseCon Europe 2019’s speaker lineup. The conference takes place in Ludwigsburg, Germany on October 21 - 24, 2019. Early bird submissions are due July 1, and the final deadline is July 15. Check out &lt;a href=&quot;https://blogs.eclipse.org/post/jameka-woodberry/eclipsecon-europe-2019-call-papers-open-until-july-15-submit-talk-today&quot;&gt;Jameka's blog&lt;/a&gt; and &lt;a href=&quot;https://www.eclipsecon.org/europe2019/cfp&quot;&gt;submit&lt;/a&gt; your talk today!&lt;/p&gt;
+
+&lt;p&gt;We are also working on&lt;strong&gt; &lt;a href=&quot;http://jakartaone.org&quot;&gt;JakartaOne Livestream conference&lt;/a&gt;, &lt;/strong&gt;scheduled for September 10th&lt;strong&gt;. Call for Papers are open until July 1st&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Thank you for your interest in Jakarta EE. Help steer Jakarta EE toward its exciting future by subscribing to the &lt;a href=&quot;https://www.globenewswire.com/Tracker?data=0tSsQkMPqlAqlO58_0kVZUNJvuApIvPd9ayj0AoAaLggLeHBBrGJlAx-F0VJJtTwdnpi0CXR-1YRnE0ETgmQeRHNh2sqtFxkPMsi-Ulu_yk=&quot;&gt;jakarta.ee-wg@eclipse.org&lt;/a&gt; mailing list and by joining the Jakarta EE Working Group.&lt;/p&gt;
+
+&lt;p&gt;To learn more about the collaborative efforts to build tomorrow’s enterprise Java platform for the cloud, check out the &lt;a href=&quot;https://jakartablogs.ee/&quot;&gt;Jakarta Blogs&lt;/a&gt; and participate in the monthly &lt;a href=&quot;https://www.meetup.com/jakartatechtalks_/&quot;&gt;Jakarta Tech Talks&lt;/a&gt;. Don’t forget to subscribe to the Eclipse &lt;a href=&quot;https://www.eclipse.org/community/eclipse_newsletter/&quot;&gt;newsletter&lt;/a&gt;!  &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-field-blog-tags field-type-taxonomy-term-reference field-label-above&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Tags: &lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;https://blogs.eclipse.org/blog-tags/jakartaee-javaee-java-eclipsefdn&quot;&gt;#JakartaEE #JavaEE #Java #EclipseFdn&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+	<pubDate>Thu, 20 Jun 2019 14:01:59 +0000</pubDate>
+</item>
+<item>
+	<title>Vladimir Piskarev: Eclipse Handly 1.2 Released</title>
+	<guid isPermaLink="false">http://pisv.wordpress.com/?p=703</guid>
+	<link>https://pisv.wordpress.com/2019/06/19/eclipse-handly-1-2-released/</link>
+	<description>&lt;p&gt;Eclipse &lt;a href=&quot;https://www.eclipse.org/handly&quot;&gt;Handly&lt;/a&gt; &lt;a href=&quot;https://projects.eclipse.org/projects/technology.handly/releases/1.2&quot;&gt;1.2&lt;/a&gt; has just been released. This release is focused on further enhancements to UI components. Particularly, it provides a framework for creating a full-featured Call Hierarchy view.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wiki.eclipse.org/Handly/New_and_Noteworthy/1.2&quot;&gt;New and Noteworthy&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://wiki.eclipse.org/Handly/Migration/1.2&quot;&gt;Migration Guide&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://projects.eclipse.org/projects/technology.handly/downloads&quot;&gt;Downloads&lt;/a&gt;&lt;/p&gt;</description>
+	<pubDate>Wed, 19 Jun 2019 18:50:18 +0000</pubDate>
+</item>
+<item>
+	<title>Webtools News: WTP 3.14 Released!</title>
+	<guid isPermaLink="false">http://www.eclipse.org/webtools/news.php#permalink188</guid>
+	<link>http://eclipse.org/webtools/releases/3.14</link>
+	<description>&lt;div&gt;
+		The Eclipse Web Tools Platform 3.14 has been released!
+		&lt;a href=&quot;https://wiki.eclipse.org/WTP_FAQ#How_do_I_install_WTP.3F&quot;&gt;Installation&lt;/a&gt;
+		and updates can be performed using the
+		Eclipse IDE 2019-06
+		&lt;a href=&quot;http://download.eclipse.org/releases/2019-06/&quot;&gt;Update Site&lt;/a&gt;
+		or through the
+		&lt;a href=&quot;https://marketplace.eclipse.org/user/nitind/listings&quot;&gt;Eclipse Marketplace&lt;/a&gt;
+		.
+		Release 3.14 is included in the 2019-06
+		&lt;a href=&quot;https://www.eclipse.org/downloads/packages/release/2019-06/r/eclipse-ide-enterprise-java-developers&quot;&gt;
+			Eclipse IDE for Enterprise Java Developers
+		&lt;/a&gt;
+		, with selected portions also included in 9
+		&lt;a href=&quot;http://www.eclipse.org/downloads/compare.php&quot;&gt;other packages&lt;/a&gt;
+		. Adopters can download
+		&lt;a href=&quot;http://download.eclipse.org/webtools/downloads/&quot;&gt;the R3.14 update site itself&lt;/a&gt;
+		directly and combine it with the necessary dependencies.&lt;/div&gt;&lt;p&gt;&lt;a href=&quot;http://www.eclipse.org/webtools/news.php#permalink188&quot;&gt;More news&lt;/a&gt;&lt;/p&gt;</description>
+	<pubDate>Wed, 19 Jun 2019 15:14:59 +0000</pubDate>
+</item>
+<item>
+	<title>itemis: Xtext 2.18 – released!</title>
+	<guid isPermaLink="true">https://blogs.itemis.com/en/xtext-2.18-released</guid>
+	<link>https://blogs.itemis.com/en/xtext-2.18-released</link>
+	<description>&lt;p&gt;The team around project lead Christian Dietrich has released version 2.18 of Xtext and Xtend. This version is also the one that enters the Eclipse release train number 2019-06, departing on time at June 19th. &lt;/p&gt; 
+&lt;p&gt;More than 40 helping hands have made this Xtext release possible over the last quarter. A big shout-out especially to the first-time contributors! We are thankful for every reported issue, comment to a discussion, and proposed patch.&lt;/p&gt; 
+&lt;p&gt;Even though the &lt;strong&gt;main focus&lt;/strong&gt; was on &lt;strong&gt;stability and robustness&lt;/strong&gt;, a couple of &lt;strong&gt;new features&lt;/strong&gt; have been made available, too.&lt;/p&gt; 
+&lt;p&gt; &lt;/p&gt; 
+&lt;h2&gt;Playing catch-up with Java&lt;/h2&gt; 
+&lt;p&gt;Xtend eventually learned to understand the ternary expression and got support for try-with-resources. While the former is just expressing a matter of taste, being able to efficiently deal with closable resources is a big win. Forgetting to close a stream or a connection is just a little harder when you can benefit from the compiler auto-closing the thing. This is also available in legacy scenarios where code is still required to run on ancient Java versions.&lt;/p&gt; 
+&lt;p&gt;Both features were implemented by &lt;em&gt;&lt;a href=&quot;https://hosting.itemis.de/author/eva-p%C3%B6ll&quot; title=&quot;Learn more about Eva Poell&quot;&gt;Eva Poell&lt;/a&gt;&lt;/em&gt;, intern for 6 weeks at our Berlin office. We are thankful for her great work!&lt;/p&gt; 
+&lt;h2&gt;Improved “find references” view&lt;/h2&gt; 
+&lt;p&gt;When exploring a code base, software engineers navigate back and forth through the source, especially between references and declarations. If you want to take notes on the usage of a DSL concept, you can copy it directly from the “search results” page. Also, if you only want to deal with a subset of the results, it’s now possible to remove matches from the view.&lt;/p&gt; 
+&lt;p&gt; &lt;/p&gt; 
+&lt;p&gt;&lt;img alt=&quot;Improved Find References View&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog%20(2019)/Software%20Development/Xext%202.18%20Released/Improved%20Find%20References%20View.png?width=1096&amp;amp;name=Improved%20Find%20References%20View.png&quot; style=&quot;width: 1096px;&quot; width=&quot;1096&quot; /&gt;&lt;/p&gt; 
+&lt;h2&gt;New quick fixes for the Xtext grammar&lt;/h2&gt; 
+&lt;p&gt;The Xtext grammar editor received some love in this release cycle, too. The validation problems around invalid empty keywords can be automatically fixed from now on. Either a reasonable default is inserted, or the keyword is removed – it’s your call.&lt;/p&gt; 
+&lt;p&gt;&lt;img alt=&quot;Xtext Grammar Editor&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog%20(2019)/Software%20Development/Xext%202.18%20Released/Xtext%20Grammar%20Editor.png?width=694&amp;amp;name=Xtext%20Grammar%20Editor.png&quot; style=&quot;width: 694px;&quot; width=&quot;694&quot; /&gt;&lt;/p&gt; 
+&lt;h2&gt;Rename refactoring&lt;/h2&gt; Long-running rename operations can now be cancelled by the user. Instead of waiting for the computation to finish and reverting the outcome, accidentally triggered renames are no longer a painful experience. 
+&lt;h2&gt;Rename class quick fix&lt;/h2&gt; Talking about renames: Even though Xtend allows to define as many public types per file as you want, it is a common usage pattern to have a single top-level class per file. If names get out of sync because of a change of mind, a quick fix is offered to align the two of them. If you decide to rename the type, a proper rename operation is triggered, and all the references are updated along with the declaration. 
+&lt;h2&gt;Language server fixes&lt;/h2&gt; The Xtext support for the Language Server Protocol has been improved in different areas. Extension implementations do now have access to the indexed resources, and the reporting of build results was fixed. Formerly, some notifications may have got lost such that the editors did not get any events about completed builds. The communication in the other direction was fixed, too. Sometimes the server did miss a couple of changed resources, thus its index information diverged from the code on disk. 
+&lt;h2&gt;Eclipse robustness&lt;/h2&gt; A few rarely-occurring issues around the startup of Eclipse and the processing of deleted projects have been fixed. It did not happen often, but if you were bitten by that bug, it was rather annoying. These issues have been resolved. 
+&lt;h2&gt;Your turn&lt;/h2&gt; The team is proud of the achievements in this release cycle. But we are also eager to know what your thoughts on this are. If you are missing a certain feature or do have suggestions how to improve Xtext or Xtend, just drop us a note and we are happy to discuss your ideas.  
+&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;https://track.hubspot.com/__ptq.gif?a=761475&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblogs.itemis.com%2Fen%2Fxtext-2.18-released&amp;amp;bu=https%253A%252F%252Fblogs.itemis.com&amp;amp;bvt=rss&quot; style=&quot;width: 1px!important;&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Tue, 18 Jun 2019 10:31:03 +0000</pubDate>
+	<author>sebastian.zarnekow@itemis.de (Sebastian Zarnekow)</author>
+</item>
+<item>
+	<title>Tanja Obradovic: JCP Copyright Licensing request</title>
+	<guid isPermaLink="false">https://blogs.eclipse.org/6709 at https://blogs.eclipse.org</guid>
+	<link>https://blogs.eclipse.org/post/tanja-obradovic/jcp-copyright-licensing-request</link>
+	<description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p dir=&quot;ltr&quot;&gt;The open source community has welcomed Oracle’s contribution of Java EE into Eclipse Foundation, under the new name Jakarta EE. As part of this huge effort and transfer, we want to ensure that we have the necessary rights so we can evolve the specifications under the new  &lt;a href=&quot;https://jakarta.ee/about/jesp/&quot;&gt;Jakarta EE Specification Process&lt;/a&gt;. For this, we need your help!&lt;/p&gt;
+
+&lt;p&gt;We must request copyright licenses from all past contributors to Java EE specifications under the &lt;a href=&quot;http://jcp.org&quot;&gt;JCP&lt;/a&gt;. Hence, we are reaching out to all companies and individuals who made contributions to Java EE in the past to help out, execute the agreements and return them back to Eclipse Foundation. As the advancement of the specifications and the technology is in question, we would greatly appreciate your prompt response. Oracle, Red Hat, IBM, and many others in the community have already signed an agreement to license their contributions to Java EE specifications to the Eclipse Foundation. We are also counting on the JCP community to be supportive of this request.&lt;/p&gt;
+
+&lt;p&gt;The request is for JCP contributors to Java EE specifications, once you receive an email from the Eclipse Foundation regarding this, please get back to us as soon as you can!&lt;/p&gt;
+
+&lt;p&gt;Should you have any questions regarding the request for copyright licenses from all past contributors, please contact &lt;a href=&quot;mailto:mariateresa.delgado@eclipse-foundation.org&quot;&gt;mariateresa.delgado@eclipse-foundation.org&lt;/a&gt; who is leading us all through this process.&lt;/p&gt;
+
+&lt;p&gt;Many thanks!&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-field-blog-tags field-type-taxonomy-term-reference field-label-above&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Tags: &lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;https://blogs.eclipse.org/blog-tags/jakartaee-javaee-java-eclipsefdn&quot;&gt;#JakartaEE #JavaEE #Java #EclipseFdn&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+	<pubDate>Mon, 17 Jun 2019 18:20:19 +0000</pubDate>
+</item>
+
+</channel>
+</rss>

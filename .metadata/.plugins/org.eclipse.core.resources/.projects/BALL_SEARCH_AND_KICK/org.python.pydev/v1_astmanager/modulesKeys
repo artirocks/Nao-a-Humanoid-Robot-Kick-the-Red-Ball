@@ -1,0 +1,4 @@
+MODULES_MANAGER_V2
+config|C:\Users\Deepak\workspace\BALL_SEARCH_AND_KICK\config.py
+connection|C:\Users\Deepak\workspace\BALL_SEARCH_AND_KICK\connection.py
+vision_getandsaveimage|C:\Users\Deepak\workspace\BALL_SEARCH_AND_KICK\vision_getandsaveimage.py

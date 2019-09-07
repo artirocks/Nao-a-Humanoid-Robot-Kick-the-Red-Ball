@@ -1,0 +1,59 @@
+-- VERSION_5
+-- START DISKCACHE_2
+C:\Users\Deepak\workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\Locate_ball_kick\com.python.pydev.analysis\v2_indexcache
+ball|1562364260979129000|C:\Users\Deepak\workspace\Locate_ball_kick\ball.py
+goal|1562361331726444000|C:\Users\Deepak\workspace\Locate_ball_kick\goal.py
+vision_getandsaveimage|1562300434496584000|C:\Users\Deepak\workspace\Locate_ball_kick\vision_getandsaveimage.py
+find_goal|1562364347230460000|C:\Users\Deepak\workspace\Locate_ball_kick\find_goal.py
+kick_ball|1562179123669413000|C:\Users\Deepak\workspace\Locate_ball_kick\kick_ball.py
+take_position|1562179218107906000|C:\Users\Deepak\workspace\Locate_ball_kick\take_position.py
+connection|1562178872043638000|C:\Users\Deepak\workspace\Locate_ball_kick\connection.py
+main|1562355632291314000|C:\Users\Deepak\workspace\Locate_ball_kick\main.py
+config|1562361297711201000|C:\Users\Deepak\workspace\Locate_ball_kick\config.py
+find_ball|1562364295984673000|C:\Users\Deepak\workspace\Locate_ball_kick\find_ball.py
+-- END DISKCACHE
+-- START DICTIONARY
+20
+19=C:\Users\Deepak\workspace\Locate_ball_kick\take_position.py
+3=C:\Users\Deepak\workspace\Locate_ball_kick\vision_getandsaveimage.py
+11=C:\Users\Deepak\workspace\Locate_ball_kick\find_goal.py
+4=vision_getandsaveimage
+18=goal
+12=find_goal
+6=kick_ball
+13=C:\Users\Deepak\workspace\Locate_ball_kick\find_ball.py
+8=main
+17=C:\Users\Deepak\workspace\Locate_ball_kick\goal.py
+16=ball
+1=C:\Users\Deepak\workspace\Locate_ball_kick\config.py
+9=C:\Users\Deepak\workspace\Locate_ball_kick\connection.py
+20=take_position
+5=C:\Users\Deepak\workspace\Locate_ball_kick\kick_ball.py
+10=connection
+2=config
+7=C:\Users\Deepak\workspace\Locate_ball_kick\main.py
+14=find_ball
+15=C:\Users\Deepak\workspace\Locate_ball_kick\ball.py
+-- END DICTIONARY
+-- START TREE 1
+16
+IP|2|IP!1^6#1*19@IP!3^36#3*35@
+adj|4|adjust_left!5^123#5*50@adjust_right!5^131#5*50@adjust!7^29#1*67@adjust_front!5^138#5*50@
+cam|1|cam!9^13#3*83@
+fin|2|findgoal!11^5#5*98@findball!13^5#5*114@
+key|1|keys!7^16#1*67@
+kic|2|kick_right!5^61#5*50@kick_left!5^6#5*50@
+loa|1|loadProxy!1^12#5*18@
+loc|2|locate_ball!15^3#5*130@locate_goal!17^3#5*146@
+mot|1|motion!9^4#3*83@
+nam|1|names!7^14#1*67@
+por|2|PORT!1^7#1*19@PORT!3^37#3*35@
+pos|2|poseZero!1^81#5*18@PoseInit!1^31#5*18@
+sho|1|showNaoImage!3^5#5*34@
+sti|2|StiffnessOn!1^21#5*18@StiffnessOff!1^26#5*18@
+tak|1|take_position!19^4#5*162@
+tim|1|times!7^15#1*67@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

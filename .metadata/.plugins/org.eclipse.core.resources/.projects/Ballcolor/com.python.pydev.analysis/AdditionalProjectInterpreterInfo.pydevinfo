@@ -1,0 +1,20 @@
+-- VERSION_5
+-- START DISKCACHE_2
+C:\Users\Deepak\workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\Ballcolor\com.python.pydev.analysis\v2_indexcache
+hsvvalue|1562423624929650000|C:\Users\Deepak\workspace\Ballcolor\hsvvalue.py
+-- END DISKCACHE
+-- START DICTIONARY
+2
+1=C:\Users\Deepak\workspace\Ballcolor\hsvvalue.py
+2=hsvvalue
+-- END DICTIONARY
+-- START TREE 1
+4
+ima|1|image_hsv!1^5#1*19@
+mai|1|main!1^21#5*18@
+pic|1|pick_color!1^9#5*18@
+pix|1|pixel!1^6#1*19@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

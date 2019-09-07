@@ -1,0 +1,9 @@
+import cv2
+from PIL import Image
+from numpy import array, uint8
+import math             
+img = cv2.imread("one.png",1)
+#cv2.imshow('original image',img)
+HSV_img=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+cv2.imshow('HSV format image',HSV_img)
+print("END")

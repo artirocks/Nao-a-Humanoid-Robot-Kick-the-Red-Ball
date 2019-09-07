@@ -1,0 +1,10 @@
+from naoqi import ALProxy
+#import config
+
+IP="169.254.38.100"
+tts = ALProxy("ALTextToSpeech","169.254.38.100",9559)
+motion=ALProxy("ALMotion","169.254.38.100",9559)
+#motion.post.moveTo(1.0,1.0,0.0)
+tts.say("I can explore,lets explore the area")
+motion.moveTo(2,2,0)
+tts.say("I have reached my destination")

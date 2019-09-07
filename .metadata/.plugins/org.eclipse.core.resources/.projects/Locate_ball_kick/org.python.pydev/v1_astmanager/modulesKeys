@@ -1,0 +1,11 @@
+MODULES_MANAGER_V2
+ball|C:\Users\Deepak\workspace\Locate_ball_kick\ball.py
+config|C:\Users\Deepak\workspace\Locate_ball_kick\config.py
+connection|C:\Users\Deepak\workspace\Locate_ball_kick\connection.py
+find_ball|C:\Users\Deepak\workspace\Locate_ball_kick\find_ball.py
+find_goal|C:\Users\Deepak\workspace\Locate_ball_kick\find_goal.py
+goal|C:\Users\Deepak\workspace\Locate_ball_kick\goal.py
+kick_ball|C:\Users\Deepak\workspace\Locate_ball_kick\kick_ball.py
+main|C:\Users\Deepak\workspace\Locate_ball_kick\main.py
+take_position|C:\Users\Deepak\workspace\Locate_ball_kick\take_position.py
+vision_getandsaveimage|C:\Users\Deepak\workspace\Locate_ball_kick\vision_getandsaveimage.py
